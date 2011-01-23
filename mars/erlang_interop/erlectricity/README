@@ -1,0 +1,7 @@
+I ran this example on Mac OS X Version 10.6.5 with Ruby 1.9.2, Erlang R14B01 and Erlectricity 1.1.1 (installed via rvm gem)
+
+To run the example covered on slides 34 - 52, I navigated to the erlang-interop/erlectricity directory and
+1. ... compiled mars.erl using the command: erlc mars.erl
+2. ... started the Erlang console using the command: erl
+3. ... entered mars:mars_age(17).
+4. ... and the output was 9.038720195638883

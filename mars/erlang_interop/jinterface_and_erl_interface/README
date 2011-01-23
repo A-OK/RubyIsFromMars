@@ -1,0 +1,50 @@
+I ran all of these examples with Erlang R14B01.
+
+I. Compiling the Erlang Code Referenced by Both the JInterface Client Example and the Erlix Client Example
+
+IA. I navigated to the erlang_interop/jinterface_and_erl_interface directory.
+IB. I compiled venus_server.erl, by running the command: erlc venus_server.erl 
+
+II. Running the JInterface Examples (covered on slides 54 - 72) with OS X 10.6.5 and JRuby 1.5.6
+
+IIA. Steps Needed for the both the JInterface Server/Erlang Client and Erlang Client/JInterface Server Examples
+IIA1. I added the bin directory under the top-level JRuby 1.5.6 directory to my PATH.
+IIA2. I created an empty erlang.rb file in erlang_interop/jinterface_and_erl_interface and I pasted the contents of 'erlang.rb' as spelled out in the following blog post by Ola Bini into it: http://olabini.com/blog/2008/04/connecting-languages-or-polyglot-programming-example-1/
+IIA2a. I made the following modifications to erlang.rb:
+IIA2a1. I replaced the following line with a require statement referencing the fully-qualified path to OtpErlang.jar on my system: require '/opt/local/lib/erlang/lib/jinterface/priv/OtpErlang.jar'
+IIA2a2. I added the following import statement:  import com.ericsson.otp.erlang.OtpErlangDouble
+IIA2a3. I added the following method:
+def double(value)
+  OtpErlangDouble.new(value)
+end
+IIA3. I started Erlang’s Port Mapper Daemon by using the following command in a terminal session: epmd
+
+IIB. Running the JRuby Server/Erlang Client Example (slides 57 - 65)
+IIB1. I navigated to jinterface_and_erl_interface in a new terminal session and started the JRuby-based server with the following command: jruby mars_server.rb
+IIB3. In another terminal window, I navigated to jinterface_and_erl_interface and compiled the Erlang-based client using the following command: erlc mars_client.erl
+IIB4.In the same window, I started an Erlang console session with the following command, referencing the cookie referenced in mars_server.rb ("mars") and the host name 'localhost' (a host name is usually not specified with the -sname option, but for more details about why I chose to do so in the interest of simplifying these instructions for a presentation that focuses on language interop and not distributed Erlang, see http://stackoverflow.com/questions/1592943/jinterface-otpnode-initialization-name-or-sname-flag and http://cammacrae.com/blog/2007/06/27/erlang-example-error/): erl -sname mars_client@localhost -setcookie mars
+IIB5. I entered the following: mars_client:mars_age(17.0).
+Here's the console output:
+AOK:jinterface_and_erl_interface AOK$ erl -sname mars_client@localhost -setcookie mars
+Erlang R14B01 (erts-5.8.2) [source] [smp:4:4] [rq:4] [async-threads:0] [hipe] [kernel-poll:false]
+Eshell V5.8.2  (abort with ^G)
+(mars_client@localhost)1> mars_client:mars_age(17.0).
+9.038720195638883
+ok
+
+
+IIC.  Running the JRuby Client/Erlang Server Example (slides 66 - 72)
+IIC1. I navigated to the jinterface_and_erl_interface directory and started up the Venus server with the following command (a host name is usually not specified with the -sname option, but for more details about why I chose to do so in the interest of simplifying these instructions for a presentation that focuses on language interop and not distributed Erlang, see http://stackoverflow.com/questions/1592943/jinterface-otpnode-initialization-name-or-sname-flag and http://cammacrae.com/blog/2007/06/27/erlang-example-error/ and ): erl -sname venus_server@localhost -setcookie venus -noshell -run venus_server
+IIC2. In another terminal window, I natigated to jinterface_and_erl_interface and ran the client using the following command: jruby venus_jinterface_client.rb
+IIC3. The output: 27.6367277906356
+
+III. Running the Erlix Example with OS X 5.4.1 and Ruby 1.8.7 (slide 72)
+
+I had trouble building Erlix on OS X 10.6.5. I will update this file when they are resolved.
+
+Also, Erlix does not yet support Ruby 1.9x, but doing so is on its roadmap.
+
+IIIA. I compiled the Erlang server code. See Step I (Compiling the Erlang Code Referenced by Both the JInterface Client Example and the Erlix Client Example), above.
+IIIB. I navigated to the jinterface_and_erl_interface directory and started up the Venus server with the following command (a host name is usually not specified with the -sname option, but for more details about why I chose to do so in the interest of simplifying these instructions for a presentation that focuses on language interop and not distributed Erlang, see http://stackoverflow.com/questions/1592943/jinterface-otpnode-initialization-name-or-sname-flag and http://cammacrae.com/blog/2007/06/27/erlang-example-error/ and ): erl -sname venus_server@localhost -setcookie venus -noshell -run venus_server
+IIIC. In another terminal window, I nativated to the erlix directory under jinterface_and_erl_interface and ran the Erlix client using the following command: ruby venus_erlix_client.rb
+IIID. The output: 27.6367277906356

@@ -1,0 +1,47 @@
+All examples were run on Mac OS X Version 10.6.5 with Ruby 1.9.2 and Erlang R14B01.
+
+I. I compiled the Erlang code that is referenced in both the rebar example and the rbridge example.
+IA. From the erlang_interop/rebar_and_rbridge directory, I ran the command: erlc venus.erl
+IB. Added the rebar_and_rbridge directory to the Erlang default path, by adding a line like the following line to the .erlang file in my home directory (you can create a .erlang file if you don't already have one), referencing the full path to my erlang_interop/rebar_and_rbridge directory: 
+code:add_pathz("/path/to/mars/erlang_interop/rebar_and_rbridge").
+
+II. Rebar (covered in slides 23 - 33)
+IIA. I cloned the repository from: https://github.com/mojombo/rebar
+IIB. I navigated to the rebar directory and compiled the erlang source using the following commands:
+IIB1. erlc rebar.erl
+IIB2. erlc json.erl
+IIB3. erlc funs.erl
+IIC. I started up Rebar by:
+IIC1. ...initiating an erl console session by entering: erl
+IIC2. ...entering the following command: rebar:start().
+IID. I accessed the Erlang-based venus_age function in an irb session (which I initiated from the rebar directory in a second terminal window). Here's the complete irb session (note that the output after I require './client.rb' is from the code examples in client.rb):
+ruby-1.9.2-head :001 > require './client.rb'
+{"result"=>3, "error"=>nil, "id"=>0}
+1 + 2 = 3
+{"result"=>"foobar", "error"=>nil, "id"=>0}
+foobar = foobar
+{"result"=>3628800, "error"=>nil, "id"=>0}
+fac(10) = 3628800
+ => true 
+ruby-1.9.2-head :002 > proxy = Rebar::Erlang.new(:venus, '127.0.0.1', 5500)
+ => #<Rebar::Erlang:0x000001020345c8 @mod="venus", @address="127.0.0.1", @port=5500> 
+ruby-1.9.2-head :003 > proxy.venus_age(17)
+{"result"=>27.6367, "error"=>nil, "id"=>0}
+ => 27.6367
+
+
+III. RBridge (covered in slides 23 - 33)
+IIIA. I installed RBridge 0.2.0 via rvm gem
+IIIB. I compiled the rulang server by navigating to the rulang_server directory under the top-level gems/rbridge-0.2.0 directory and using the command: erlc rulang.erl.
+IIIC. I added the rulang_server directory to the default Erlang path by adding a line like the following to the .erlang file under my home directory, referencing the fully-qualified path to rbridge-0.2.0/rulang_server: 
+code:add_pathz("/path/to/.rvm/gems/ruby-1.9.2-head/gems/rbridge-0.2.0/rulang_server").
+IIID. I started the RBridge server by:
+IIID1. ... initiating an erl console session by entering the following command (because I added the rulang_server directory to my default Erlang path, I can initiate the console session from anywhere): erl
+IIID2. ... entering the following command: rulang:start_server(9900).
+IIIE. I accessed the Erlang-based venus_age function from an irb session. Here's the complete session:
+ruby-1.9.2-head :001 > require 'rbridge'
+ => true 
+ruby-1.9.2-head :002 > proxy = RBridge.new("venus", 'localhost', 9900)
+ => #<RBridge:0x0000010087d380 @mod="venus", @erlang=#<ErlangAdapter:0x0000010087d358 @host="localhost", @port=9900>, @async=false> 
+ruby-1.9.2-head :003 > proxy.venus_age(17)
+ => 27.63672779063557 

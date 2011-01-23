@@ -1,0 +1,11 @@
+The file ruby_is_from_mars.pdf contains a fully-annotated version of the slides for the presentation "Ruby is From Mars, Functional Languages are from Venus: Integrating Ruby with Erlang, Scala and F#".
+
+This project contains the source for all of the examples. The READMEs in each sub-directory contain details about how I ran the examples and the versions of the projects I used.
+
+The presentation abstract:
+
+We won't just look at how to use projects that bridge Ruby and functional languages, we'll walk through the lower-level code that allows the inter-language communication to happen.
+
+We'll explore different approaches to language interoperability ranging from accessing libraries through universal protocols to embedding foreign syntax in a host source file.
+
+We'll also discuss techniques for ensuring that your polyglot applications won't read like bad translations and behave in unexpected ways.

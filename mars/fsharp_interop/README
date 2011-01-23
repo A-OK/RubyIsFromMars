@@ -1,0 +1,28 @@
+I created these examples on WindowsXP with .NET Framework V.4.0.30319 with the free Visual Studio 2010 Shell installed (from http://www.microsoft.com/downloads/en/details.aspx?familyid=8E5AA7B6-8436-43F0-B778-00C3BCA733D3&displaylang=en), using IronRuby 1.1.1 and FSharp 2.0.
+
+To simplify directions for building and running the examples, I put all the required artifacts in a "mars_venus" directory. This way there's no need to deal with the special handling that Windows requires for paths that have spaces in them or Windows dynamic link library (DLL) management. Windows will always find a DLL referenced by a program in the directory where the executable is launched.
+
+I. Setting up the mars_venus Directory (for building and running the examples)
+IA. I created a mars_venus directory: "C:\mars_venus". 
+IB. From v.4.0/bin in the directory where FSharp-2.0.0.0 is installed, I copied the following files into C:\mars_venus: FSharp.Core.dll, FSharp.Core.optdata,  FSharp.Core.sigdata & Fsc.exe
+IC. From Silverlight/bin the directory where IronRuby 1.1.1 is installed, I copied the following files into C:\mars_venus: IronRuby.dll, IronRuby.Libraries.dll, Microsoft.Dynamic.dll, Microsoft.Scripting.dll & System.Numerics.dll
+
+II. IronRuby Hosting FSharp 
+IIA. First I compiled and packaged the FSharp code I wanted to reference from IronRuby, which is all contained in fsharp_interop/ironruby_hosting_fsharp/Venus.fs. This involved:
+IIA1. ...copying Venus.fs into the mars_venus directory (see the "I. Setting up the mars_venus Directory" section, above)
+IIA2. ...packaging Venus.fs into a DLL (Venus.dll) using the following command, executed from the mars_venus directory:fsc -a -r IronRuby.dll -r IronRuby.Libraries.dll  -r Microsoft.Dynamic.dll -r Microsoft.Scripting.dll -r C:\Windows\Microsoft.NET\Framework\v4.0.30319\System.dll Venus.fs
+
+IIB. Access F# Routines from the IronRuby console
+IIB1. I ran irb from C:\mars_venus by entering: ir 
+The IronRuby 1.1.1 installer adds the path to ir to the PATH environmental variable. If you don't use the installer, you'll need to use the full path to ir.exe (or add the path to ir.exe to the PATH environmental variable manually).
+IIB2. In irb, I entered: require "FSharp.Core.dll"
+IIB3. In irb: I entered: require "Venus.dll"
+IIB4. I was then able to access the FSharp-based routines and discriminated union packaged in Venus.dll.
+IIB5. See slides 134 through 138 and slide 147 for notes about and examples of accessing F# routines and types from IronRuby.
+IIB6. See slides 139 through 146 for sample console sessions showing the MathExpr in action.
+
+
+III. F# Hosting Iron Ruby
+IIIA. I copied Mars.fs from fsharp_interop/fsharp_hosting_iron_ruby into mars_venus (see the "I. Setting up the mars_venus Directory" section, above). Details about the contents of this file is covered on slide 133.
+IIIB. I compiled Mars.fs with the following command: fsc -o Mars.exe -r IronRuby.dll -r IronRuby.Libraries.dll  -r Microsoft.Dynamic.dll -r System.Numerics.dll -r Microsoft.Scripting.dll -r C:\Windows\Microsoft.NET\Framework\v4.0.30319\System.dll Mars.fs
+IIIC: I ran the newly created executable from C:\mars_venus by entering: Mars

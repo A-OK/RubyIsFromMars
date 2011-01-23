@@ -1,0 +1,94 @@
+I ran these examples on Mac OS X Version 10.6.5 with JRuby 1.5.6 and Scala 2.8.1.
+
+I. Scala Hosting Ruby via JRuby (using Daniel Spiewak's JRuby/Scala Interop DSL)
+IA. I added scala-library.jar, using its fully-qualified path (it's under the lib directory under the top-level directory containing the Scala release) to my CLASSPATH. In the alternative, you can add scala-library.jar (with its fully-qualified path) to the paths paired with the -classpath argument to the scala command in step IE5, below. 
+IB. I added 2 bin directories to my PATH: the bin directory under the top-level Scala 1.5.6 directory and the bin directory under the top-level JRuby 1.5.6 directory.
+IC. I downloaded unnamed-scala-ruby.zip, which is referenced near the bottom of the following blog post by Daniel Spiewak: http://www.codecommit.com/blog/ruby/jruby-interop-dsl-in-scala 
+ID. I uncompressed unnamed-scala-ruby.zip, which yielded the ScalaRuby directory. 
+IE. I compiled Daniel Spiewak's ScalaRuby library and mars.scala (which I created to show examples of my favorite features of the ScalaRuby library). 
+
+Slides 79 through 92 go into detail about Mars.scala and the ScalaRuby library features that allow it to work.
+
+In the ScalaRuby directory, Daniel provides an ant-based script to build the examples he analyzes in his blog post, and I leveraged it to build my examples. 
+This involved:
+IE1. ... modifying some of the library code. Because the ScalaRuby library was written when Scala 2.7 was the current version, it is not compatible with Scala 2.8. It will not build without some modifications. For the most part, the changes involve commenting out the invalid lines -- none of which are in routines that are needed for the mars/venus examples.
+IE1a. In ScalaRuby/build.properties, I replaced "C:/Program Files/Scala" with the location of my Scala 2.8.1 install.
+IE1b. In ScalaRuby/src/com/codecommit/scalaruby/JRuby.scala, I commented out line 33: 
+// val clazz = Symbol(obj.getMetaClass().toString()).intern
+and replaced it with:
+val clazz = Symbol(obj.getMetaClass().toString())
+IE1c. In ScalaRuby/src/com/codecommit/scalaruby/RubyObject.scala, I commented out line 22:
+// private[scalaruby] final def str2sym(str:String) = Symbol(str).intern
+and replaced it with:
+private[scalaruby] final def str2sym(str:String) = Symbol(str)
+IE1d. In ScalaRuby/src/com/codecommit/scalaruby/RubyObject.scala, I commented out the implicit definitions for any2ArrowAssoc[A](a:A) and any2SendAssoc(a:Any), as well as the class definitions for SpecialArrowAssoc and SpecialSendAssoc:
+
+ // implicit def any2ArrowAssoc[A](a:A) = new SpecialArrowAssoc(a)
+ // implicit def any2SendAssoc(a:Any) = new SpecialSendAssoc(a)
+ 
+ // private[scalaruby] class SpecialArrowAssoc[A](a:A) extends ArrowAssoc(a) {
+ //  def ->(sym:Symbol) = (a match {
+ //    case obj:RubyObject => obj
+ //    case other => new RubyWrapperObject(other)
+ //  })->sym
+//  }
+ 
+// private[scalaruby] class SpecialSendAssoc(a:Any) {
+//   def send[R](str:String) = (a match {
+//     case obj:RubyObject => obj
+ //    case other => new RubyWrapperObject(other)
+ //  }).send[R](str)
+// }
+2. ...replacing Daniel's examples (which need to be updated to work with Scala 2.8.1) with my examples.
+IE2a. I removed ScalaRuby/src/test.rb and ScalaRuby/src/syntax.scala.
+IE2b. I copied scala_interop/scala_hosting_jruby/mars.scala and scala_interop/scala_hosting_jruby/mars.rb into ScalaRuby/src.
+IE3. ...replacing the JRuby jars in the ScalaRuby/lib directory with a JRuby 1.5.6 jar.
+IE3a. I deleted jruby-complete.jar and jruby-engine.jar from ScalaRuby/lib.
+IE3b. I copied jruby.jar from the lib directory under the top-level directory where I unzipped the JRuby 1.5.6 release into ScalaRuby/lib.
+IE4. ... running the following command from the ScalaRuby directory: ant
+IF4a. If you don't have Apache ant installed, you can download it from here: http://ant.apache.org/ivy/download.cgi
+IE5. I ran the example in mars.scala by entering the following command from the ScalaRuby directory: scala -classpath /ScalaRuby:/ScalaRuby/bin/:/ScalaRuby/lib/jruby.jar Main
+IE6. The program output is: 9.038720195638883
+
+II. JRuby Hosting Scala (using Daniel Spiewak's scala.rb Library): Slides 95 - 131
+IIA. I set the SCALA_HOME environmental variable to point to the top-level directory containing the Scala release (ie /path/to/scala-2.8.1.final).
+IIB. I added 2 jars to my CLASSPATH (in the alternative, you can use 'require' statements to loads these jars):
+IIB1. I added scala-library.jar to my CLASSPATH, using its fully-qualified path. It's under the lib directory under the top-level directory containing the Scala release. 
+IIB2. I added jruby.jar to my CLASSPATH using its fully-qualified path. It's in the lib directory under the top-level JRuby 1.5.6 directory.
+IIC. I added 2 bin directories to my PATH: the bin directory under the top-level Scala 1.5.6 directory and the bin directory under the top-level JRuby 1.5.6 directory.
+IID. I downloaded scala.rb, which is referenced in the following blog post by Daniel Spiewak: http://www.codecommit.com/blog/ruby/integrating-scala-into-jruby (The direct link for scala.rb is: http://www.codecommit.com/blog/misc/scala.rb).
+IIE. I deposited scala.rb into the scala_interop/jruby_hosting_scala directory.
+IIF. I made the following changes to scala.rb to fix a bug and to make it compatible with Scala 2.8.1 (it was originally written when Scala 2.7.1 was the latest stable version of Scala):
+IIF1. I replaced the first appearance of Java::Scala::RandomAccessSeq with Java::Scala::Collection::IndexedSeq because Java::Scala::RandomAccessSeq does not exist in Scala 2.8.1.
+IIF2. I replaced ScalaProc::ScalaFunction#apply with the following version of apply, which handles multiple arguments (the original version did not support procs with more than one argument):
+
+def apply(*args)
+  arglist = "("
+
+  unless args.empty?
+    for i in 0..(args.size - 2)
+      arglist += "args[#{i}], "
+    end
+    arglist += "args[#{args.size - 1}]"
+  end
+
+  arglist += ')'
+
+  eval("@delegate.call#{arglist}")
+end
+
+IIF3. Starting with the line that contains "class BoxedRubyArray", I deleted every line through the end of the file. This code I removed is not compatible with Scala 2.8.1, and it's also not needed for any of the mars/venus examples.
+IIF4. I replaced the line:
+`readlink \`which scala\``.gsub("/bin/scala\n", '') 
+with
+`which scala`.gsub("/bin/scala\n", '')
+
+IIG. I compiled and packaged the Scala code that is referenced in on slides 95 - 118, which also include a walk-through of a lot of the scala.rb code.
+This involved going to the juby_hosting_scala_directory and:
+IIG1. ...compiling Venus.scala with the following command: scalac Venus.scala
+IIG2. ...packaging the generated Venus classes into a jar by running the following command: jar -cf venus.jar Venus*.class
+IIG1. ...compiling SpaceCats.scala with the following command: scalac SpaceCats.scala
+IIG2. ...packaging the generated SpaceCats classes into a jar by running the following command: jar -cf space_cats.jar SpaceCats*.class
+IIH. I started a jirb session.
+IIH1. In order to run the example on slides 96 - 98,  I entered: require 'venus.jar'
+IIH2. In order to run the example on slides 112 - 118, I entered: require 'space_cats.jar'.
