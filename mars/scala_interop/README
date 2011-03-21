@@ -1,8 +1,8 @@
-I ran these examples on Mac OS X Version 10.6.5 with JRuby 1.5.6 and Scala 2.8.1.
+I ran these examples on Mac OS X Version 10.6.5 with JRuby 1.6.0 and Scala 2.8.1.
 
 I. Scala Hosting Ruby via JRuby (using Daniel Spiewak's JRuby/Scala Interop DSL)
 IA. I added scala-library.jar, using its fully-qualified path (it's under the lib directory under the top-level directory containing the Scala release) to my CLASSPATH. In the alternative, you can add scala-library.jar (with its fully-qualified path) to the paths paired with the -classpath argument to the scala command in step IE5, below. 
-IB. I added 2 bin directories to my PATH: the bin directory under the top-level Scala 1.5.6 directory and the bin directory under the top-level JRuby 1.5.6 directory.
+IB. I added 2 bin directories to my PATH: the bin directory under the top-level Scala 1.6.0 directory and the bin directory under the top-level JRuby 1.6.0 directory.
 IC. I downloaded unnamed-scala-ruby.zip, which is referenced near the bottom of the following blog post by Daniel Spiewak: http://www.codecommit.com/blog/ruby/jruby-interop-dsl-in-scala 
 ID. I uncompressed unnamed-scala-ruby.zip, which yielded the ScalaRuby directory. 
 IE. I compiled Daniel Spiewak's ScalaRuby library and mars.scala (which I created to show examples of my favorite features of the ScalaRuby library). 
@@ -42,9 +42,9 @@ IE1d. In ScalaRuby/src/com/codecommit/scalaruby/RubyObject.scala, I commented ou
 2. ...replacing Daniel's examples (which need to be updated to work with Scala 2.8.1) with my examples.
 IE2a. I removed ScalaRuby/src/test.rb and ScalaRuby/src/syntax.scala.
 IE2b. I copied scala_interop/scala_hosting_jruby/mars.scala and scala_interop/scala_hosting_jruby/mars.rb into ScalaRuby/src.
-IE3. ...replacing the JRuby jars in the ScalaRuby/lib directory with a JRuby 1.5.6 jar.
+IE3. ...replacing the JRuby jars in the ScalaRuby/lib directory with a JRuby 1.6.0 jar.
 IE3a. I deleted jruby-complete.jar and jruby-engine.jar from ScalaRuby/lib.
-IE3b. I copied jruby.jar from the lib directory under the top-level directory where I unzipped the JRuby 1.5.6 release into ScalaRuby/lib.
+IE3b. I copied jruby.jar from the lib directory under the top-level directory where I unzipped the JRuby 1.6.0 release into ScalaRuby/lib.
 IE4. ... running the following command from the ScalaRuby directory: ant
 IF4a. If you don't have Apache ant installed, you can download it from here: http://ant.apache.org/ivy/download.cgi
 IE5. I ran the example in mars.scala by entering the following command from the ScalaRuby directory: scala -classpath /ScalaRuby:/ScalaRuby/bin/:/ScalaRuby/lib/jruby.jar Main
@@ -54,8 +54,8 @@ II. JRuby Hosting Scala (using Daniel Spiewak's scala.rb Library): Slides 95 - 1
 IIA. I set the SCALA_HOME environmental variable to point to the top-level directory containing the Scala release (ie /path/to/scala-2.8.1.final).
 IIB. I added 2 jars to my CLASSPATH (in the alternative, you can use 'require' statements to loads these jars):
 IIB1. I added scala-library.jar to my CLASSPATH, using its fully-qualified path. It's under the lib directory under the top-level directory containing the Scala release. 
-IIB2. I added jruby.jar to my CLASSPATH using its fully-qualified path. It's in the lib directory under the top-level JRuby 1.5.6 directory.
-IIC. I added 2 bin directories to my PATH: the bin directory under the top-level Scala 1.5.6 directory and the bin directory under the top-level JRuby 1.5.6 directory.
+IIB2. I added jruby.jar to my CLASSPATH using its fully-qualified path. It's in the lib directory under the top-level JRuby 1.6.0 directory.
+IIC. I added 2 bin directories to my PATH: the bin directory under the top-level Scala 1.6.0 directory and the bin directory under the top-level JRuby 1.6.0 directory.
 IID. I downloaded scala.rb, which is referenced in the following blog post by Daniel Spiewak: http://www.codecommit.com/blog/ruby/integrating-scala-into-jruby (The direct link for scala.rb is: http://www.codecommit.com/blog/misc/scala.rb).
 IIE. I deposited scala.rb into the scala_interop/jruby_hosting_scala directory.
 IIF. I made the following changes to scala.rb to fix a bug and to make it compatible with Scala 2.8.1 (it was originally written when Scala 2.7.1 was the latest stable version of Scala):
@@ -91,4 +91,5 @@ IIG1. ...compiling SpaceCats.scala with the following command: scalac SpaceCats.
 IIG2. ...packaging the generated SpaceCats classes into a jar by running the following command: jar -cf space_cats.jar SpaceCats*.class
 IIH. I started a jirb session.
 IIH1. In order to run the example on slides 96 - 98,  I entered: require 'venus.jar'
-IIH2. In order to run the example on slides 112 - 118, I entered: require 'space_cats.jar'.
+IIH2. In order to run the example on slides 112 - 118, I entered: 
+require 'space_cats.jar' and require 'scala.rb'

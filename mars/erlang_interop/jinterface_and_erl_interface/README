@@ -5,10 +5,10 @@ I. Compiling the Erlang Code Referenced by Both the JInterface Client Example an
 IA. I navigated to the erlang_interop/jinterface_and_erl_interface directory.
 IB. I compiled venus_server.erl, by running the command: erlc venus_server.erl 
 
-II. Running the JInterface Examples (covered on slides 54 - 72) with OS X 10.6.5 and JRuby 1.5.6
+II. Running the JInterface Examples (covered on slides 54 - 72) with OS X 10.6.5 and JRuby 1.6.0
 
 IIA. Steps Needed for the both the JInterface Server/Erlang Client and Erlang Client/JInterface Server Examples
-IIA1. I added the bin directory under the top-level JRuby 1.5.6 directory to my PATH.
+IIA1. I added the bin directory under the top-level JRuby 1.6.0 directory to my PATH.
 IIA2. I created an empty erlang.rb file in erlang_interop/jinterface_and_erl_interface and I pasted the contents of 'erlang.rb' as spelled out in the following blog post by Ola Bini into it: http://olabini.com/blog/2008/04/connecting-languages-or-polyglot-programming-example-1/
 IIA2a. I made the following modifications to erlang.rb:
 IIA2a1. I replaced the following line with a require statement referencing the fully-qualified path to OtpErlang.jar on my system: require '/opt/local/lib/erlang/lib/jinterface/priv/OtpErlang.jar'
