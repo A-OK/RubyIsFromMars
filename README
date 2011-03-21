@@ -2,6 +2,8 @@ The file ruby_is_from_mars.pdf contains a fully-annotated version of the slides 
 
 This project contains the source for all of the examples. The READMEs in each sub-directory contain details about how I ran the examples and the versions of the projects I used.
 
+A number of the examples use the relative ages of the programming languages as data. Those ages remain frozen in time, based on how old the languages were at the time the slide deck was completed. However, the examples have all been updated to work with recent versions of Ruby, JRuby, IronRuby, Scala , Erlang and FSharp (Ruby 1.9.2, JRuby 1.6.0, IronRuby 1.1.1, Scala 2.8.1, Erlang R14B01 and FSharp 2.0).
+
 The presentation abstract:
 
 We won't just look at how to use projects that bridge Ruby and functional languages, we'll walk through the lower-level code that allows the inter-language communication to happen.
